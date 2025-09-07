@@ -153,34 +153,20 @@ recipeForm.addEventListener("submit", function (e) {
   }
 });
 
-// // // Save recipe function
-// function saveRecipe(recipe) {
-//   const savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
 
-//   // Check duplicates
-//   if (
-//     savedRecipes.some((r) => r.name.toLowerCase() === recipe.name.toLowerCase())
-//   ) {
-//     statusMessage.textContent = "Recipe already exists!";
-//     statusMessage.style.color = "red";
-//     return;
-//   }
-
-//   savedRecipes.push(recipe);
-//   localStorage.setItem("Recipes", JSON.stringify(savedRecipes));
-
-//   statusMessage.textContent = "Recipe added successfully!";
-//   statusMessage.style.color = "green";
-//   recipeForm.reset();
-//   ingredientsContainer.innerHTML = "";
-//   instructionsContainer.innerHTML = "";
-//   addIngredient();
-//   addInstruction();
-// }
 
 // Save or update recipe
 function saveOrUpdateRecipe(recipe) {
   let savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
+
+  // Ensure ingredients & instructions are arrays
+  recipe.ingredients = Array.isArray(recipe.ingredients)
+    ? recipe.ingredients
+    : (recipe.ingredients || "").split("\n").map(i => i.trim()).filter(Boolean);
+
+  recipe.instructions = Array.isArray(recipe.instructions)
+    ? recipe.instructions
+    : (recipe.instructions || "").split("\n").map(i => i.trim()).filter(Boolean);
 
   if (recipeForm.dataset.editingId) {
     // Update existing recipe
