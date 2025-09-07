@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe Collection App</title>
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Bootstrap navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark custom-green">
+      <div class="container-fluid">
+        <a class="navbar-brand tan-text" href="index.html">
+          <img
+            src="assets/arcticons--enrecipes.svg"
+            alt="Logo"
+            width="40"
+            height="34"
+            class="d-inline-block align-text-top"
+          />
+          Recipe Collection App
+        </a>
+
+        <div class="ms-auto">
+          <a href="search-recipes.html" class="btn btn-tan-outline btn-sm me-2"
+            >Search Recipes</a
+          >
+          <a href="add-recipe.html" class="btn btn-tan-outline btn-sm me-2"
+            >Add Recipe</a
+          >
+          <a href="view-recipe.html" class="btn btn-tan-outline btn-sm me-2"
+            >View Recipe</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid mt-5">
+      <h2 class="tan-text text-center">Search Recipes</h2>
+      <!-- Search by Name -->
+      <div class="mb-3">
+        <label for="name-search" class="form-label">Search by Name:</label>
+        <input
+          type="text"
+          id="name-search"
+          class="form-control"
+          placeholder="e.g., Chicken Curry"
+        />
+        <button class="btn btn-primary mt-2" id="search-by-name-btn">
+          Search
+        </button>
+      </div>
+
+      <!-- Search by Category -->
+      <div class="mb-3">
+        <label for="category-select" class="form-label"
+          >Search by Category:</label
+        >
+        <select id="category-select" class="form-select">
+          <option value="" disabled selected>Select Category</option>
+          <option>Dessert</option>
+          <option>Beef</option>
+          <option>Seafood</option>
+          <option>Vegetarian</option>
+          <option>Breakfast</option>
+        </select>
+        <button class="btn btn-success mt-2" id="search-by-category-btn">
+          Search
+        </button>
+      </div>
+
+      <!-- Search by Ingredient -->
+      <div class="mb-3">
+        <label for="ingredient-search" class="form-label"
+          >Search by Ingredient:</label
+        >
+        <input
+          type="text"
+          id="ingredient-search"
+          class="form-control"
+          placeholder="e.g., Chicken"
+        />
+        <button class="btn btn-warning mt-2" id="search-by-ingredient-btn">
+          Search
+        </button>
+      </div>
+
+      <hr />
+
+      <!-- Results -->
+      <div id="api-results" class="row g-3"></div>
+      <a href="view-recipe.html" class="btn btn-success mt-4">View Saved Recipes</a>
+    </div>
+
+    <script src="js/helpers-full.js"></script>
+    <script src="js/recipes-shared.js"></script>
+    <script src="js/search-recipes.js"></script>
+    
+    <!-- <script src="js/view-recipe.js"></script> -->
+    <!-- <script src="js/add-recipe.js"></script> -->
+    
+  </body>
+</html>

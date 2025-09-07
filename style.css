@@ -1,0 +1,20 @@
+.custom-green {
+  background-color: #90EE90; /* light green background */
+}
+
+/* Custom tan outline button */
+.btn-tan-outline {
+  color: #8a530b;                /* tan text */
+  border: 2px solid #8a530b;     /* tan border */
+  background-color: transparent; /* no fill */
+  transition: all 0.3s ease;
+}
+
+.btn-tan-outline:hover {
+  background-color: #aa6c1c; /* fill with tan on hover */
+  color: #fff;              /* white text when hovered */
+}
+
+.tan-text {
+    color: #8a530b; ;
+}
