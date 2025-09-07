@@ -15,7 +15,6 @@ function loadSavedRecipes() {
     col.className = "col-md-4";
 
     // --- Ingredients ---
- 
     const ingredientsArray = Array.isArray(recipe.ingredients)
       ? recipe.ingredients
       : (recipe.ingredients || "").split("\n").map(i => i.trim());
@@ -53,10 +52,13 @@ function loadSavedRecipes() {
       </div>
     `;
 
-    // // //----Edit Button
-    // col.querySelector(".edit-btn").addEventListener("click", () => {
-    //   openEditForm(recipe);
-    // });
+    
+
+    // --- Edit button ---
+    col.querySelector(".edit-btn").addEventListener("click", () => {
+      // Navigate to add-recipe.html with id in URL
+      window.location.href = `add-recipe.html?id=${recipe.idMeal}`;
+    });
 
     // --- Delete button ---
     col.querySelector(".delete-btn").addEventListener("click", () => {
@@ -70,7 +72,7 @@ function loadSavedRecipes() {
   });
 }
 
-function appendSavedRecipe(recipe, index) {
+function appendSavedRecipe(recipe) {
   const container = document.getElementById("saved-recipes");
   if (!container) return; // Don't do anything if container not found
 
@@ -79,20 +81,28 @@ function appendSavedRecipe(recipe, index) {
 
   recipeCard.innerHTML = `
     <div class="card h-100">
-      <img src="${recipe.thumbnail}" class="card-img-top" alt="${recipe.name}">
+      <img src="${recipe.thumbnail || "assets/default-image.png"}" class="card-img-top" alt="${recipe.name}">
       <div class="card-body">
         <h5 class="card-title">${recipe.name}</h5>
         <p><strong>Category:</strong> ${recipe.category}</p>
         <pre><strong>Ingredients:</strong>\n${recipe.ingredients}</pre>
         <pre><strong>Instructions:</strong>\n${recipe.instructions}</pre>
+        <button class="btn btn-primary btn-sm edit-btn mt-2 me-2">Edit</button>
         <button class="btn btn-danger delete-btn mt-2">Delete</button>
       </div>
     </div>
   `;
 
+ 
+  // Edit button
+  recipeCard.querySelector(".edit-btn").addEventListener("click", () => {
+    window.location.href = `add-recipe.html?id=${recipe.idMeal}`;
+  });
+
+  // Delete button
   recipeCard.querySelector(".delete-btn").addEventListener("click", () => {
-    deleteRecipe(recipe.idMeal); // use idMeal instead of index
-    recipeCard.remove(); // remove from DOM immediately
+    deleteRecipe(recipe.idMeal);
+    col.remove();
   });
 
   container.appendChild(recipeCard);

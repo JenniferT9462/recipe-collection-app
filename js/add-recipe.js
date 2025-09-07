@@ -1,7 +1,7 @@
 // Proof of Life
 console.log("Hello from add-recipe.js!");
 
-    // Get form elements
+// Get form elements
 const recipeForm = document.getElementById("recipe-form");
 const statusMessage = document.getElementById("status-message");
 const addIngredientBtn = document.getElementById("add-ingredient-btn");
@@ -17,7 +17,9 @@ function addIngredient(value = "") {
     <input type="text" class="form-control me-2 ingredient-input" value="${value}" placeholder="Enter ingredient" required />
     <button type="button" class="btn btn-danger btn-sm remove-btn">x</button>
   `;
-  div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+  div
+    .querySelector(".remove-btn")
+    .addEventListener("click", () => div.remove());
 
   ingredientsContainer.appendChild(div);
 }
@@ -44,6 +46,50 @@ addInstruction();
 addIngredientBtn.addEventListener("click", () => addIngredient());
 addInstructionBtn.addEventListener("click", () => addInstruction());
 
+// Check if editing a recipe via URL
+const urlParams = new URLSearchParams(window.location.search);
+const editingId = urlParams.get("id");
+const savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
+
+
+//Checking for Id to send to add-recipe to edit
+if (editingId) {
+  const recipeToEdit = savedRecipes.find((r) => r.idMeal === editingId);
+  if (recipeToEdit) {
+    // Prefill form
+    document.getElementById("recipe-name").value = recipeToEdit.name;
+    document.getElementById("category").value = recipeToEdit.category;
+
+    // Ensure ingredients is an array
+    const ingredientsArray = Array.isArray(recipeToEdit.ingredients)
+      ? recipeToEdit.ingredients
+      : (recipeToEdit.ingredients || "").split("\n").map(i => i.trim()).filter(Boolean);
+    
+      // Prefill ingredients
+    ingredientsContainer.innerHTML = "";
+    ingredientsArray.forEach((ing) => addIngredient(ing));
+    // recipeToEdit.ingredients.forEach((ing) => addIngredient(ing));
+
+
+    // Ensure instructions is an array
+    const instructionsArray = Array.isArray(recipeToEdit.instructions)
+      ? recipeToEdit.instructions
+      : (recipeToEdit.instructions || "").split("\n").map(i => i.trim()).filter(Boolean);
+
+    // Prefill instructions
+    instructionsContainer.innerHTML = "";
+    instructionsArray.forEach((inst) => addInstruction(inst));
+    // recipeToEdit.instructions.forEach((inst) => addInstruction(inst));
+
+    // Save editingId in dataset
+    recipeForm.dataset.editingId = editingId;
+
+    statusMessage.textContent = "Editing recipe: " + recipeToEdit.name;
+    statusMessage.style.color = "blue";
+  }
+}
+
+//Submit form
 recipeForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -75,8 +121,8 @@ recipeForm.addEventListener("submit", function (e) {
     return;
   }
 
-  const savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
-  const editingId = recipeForm.dataset.editingId;
+  // const savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
+  // const editingId = recipeForm.dataset.editingId;
 
   let recipeToSave = {
     name,
@@ -86,7 +132,7 @@ recipeForm.addEventListener("submit", function (e) {
     idMeal: editingId || Date.now().toString(),
   };
 
-//   // Handle image
+  //   // Handle image
   if (imageInput && imageInput.files.length > 0) {
     const reader = new FileReader();
     reader.onload = function () {
@@ -102,39 +148,69 @@ recipeForm.addEventListener("submit", function (e) {
     } else {
       recipeToSave.thumbnail = null;
     }
-    saveOrUpdateRecipe(recipeToSave, savedRecipes, editingId);
+    // saveOrUpdateRecipe(recipeToSave, savedRecipes, editingId);
+    saveOrUpdateRecipe(recipeToSave);
   }
-    
-
-
 });
 
-// // Save recipe function
-function saveRecipe(recipe) {
-  const savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
+// // // Save recipe function
+// function saveRecipe(recipe) {
+//   const savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
 
-  // Check duplicates
-  if (
-    savedRecipes.some((r) => r.name.toLowerCase() === recipe.name.toLowerCase())
-  ) {
-    statusMessage.textContent = "Recipe already exists!";
-    statusMessage.style.color = "red";
-    return;
+//   // Check duplicates
+//   if (
+//     savedRecipes.some((r) => r.name.toLowerCase() === recipe.name.toLowerCase())
+//   ) {
+//     statusMessage.textContent = "Recipe already exists!";
+//     statusMessage.style.color = "red";
+//     return;
+//   }
+
+//   savedRecipes.push(recipe);
+//   localStorage.setItem("Recipes", JSON.stringify(savedRecipes));
+
+//   statusMessage.textContent = "Recipe added successfully!";
+//   statusMessage.style.color = "green";
+//   recipeForm.reset();
+//   ingredientsContainer.innerHTML = "";
+//   instructionsContainer.innerHTML = "";
+//   addIngredient();
+//   addInstruction();
+// }
+
+// Save or update recipe
+function saveOrUpdateRecipe(recipe) {
+  let savedRecipes = JSON.parse(localStorage.getItem("Recipes")) || [];
+
+  if (recipeForm.dataset.editingId) {
+    // Update existing recipe
+    const index = savedRecipes.findIndex((r) => r.idMeal === recipe.idMeal);
+    if (index !== -1) {
+      savedRecipes[index] = recipe;
+    }
+    statusMessage.textContent = "Recipe updated successfully!";
+    statusMessage.style.color = "green";
+  } else {
+    // New recipe
+    if (savedRecipes.some((r) => r.name.toLowerCase() === recipe.name.toLowerCase())) {
+      statusMessage.textContent = "Recipe already exists!";
+      statusMessage.style.color = "red";
+      return;
+    }
+    savedRecipes.push(recipe);
+    statusMessage.textContent = "Recipe added successfully!";
+    statusMessage.style.color = "green";
   }
 
-  savedRecipes.push(recipe);
   localStorage.setItem("Recipes", JSON.stringify(savedRecipes));
 
-  statusMessage.textContent = "Recipe added successfully!";
-  statusMessage.style.color = "green";
+  // Reset form
   recipeForm.reset();
   ingredientsContainer.innerHTML = "";
   instructionsContainer.innerHTML = "";
   addIngredient();
   addInstruction();
+
+  // Clear editing flag
+  delete recipeForm.dataset.editingId;
 }
-
-// Prefill form to edit an existing recipe
-
-
-
